@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unlock the Blueprint: Text Structures</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1b2a5c; --gold:#f2b632; --gold2:#ffd977; --ink:#1f2433; --muted:#5b6275;
+  --bg:#fff8ea; --card:#ffffff; --line:#e9e1cf;
+  --desc:#8e44ad; --seq:#1f8fd6; --comp:#16a37f; --ce:#e8590c; --ps:#d6336c;
+  --ok:#1e9e5a; --no:#d64545;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:Nunito,system-ui,sans-serif;font-size:18px;line-height:1.55;
+  background-image:radial-gradient(circle at 10% 0%,#ffe9b8 0,transparent 40%),radial-gradient(circle at 100% 30%,#dff0ff 0,transparent 35%);
+  background-attachment:fixed;-webkit-text-size-adjust:100%}
+h1,h2,h3{font-family:Fredoka,Nunito,sans-serif;color:var(--navy);line-height:1.2;margin:.2em 0 .5em}
+h1{font-size:1.9rem} h2{font-size:1.6rem} h3{font-size:1.2rem}
+.wrap{max-width:860px;margin:0 auto;padding:12px 16px 120px}
+
+/* header */
+header.top{display:flex;align-items:center;gap:14px;background:var(--card);border-radius:20px;padding:10px 16px;box-shadow:0 4px 0 var(--line);margin-bottom:14px;flex-wrap:wrap}
+#logo{height:74px;width:auto;display:block}
+#logoText{display:none;align-items:center;gap:8px;font-family:Fredoka;font-weight:700;color:var(--navy);font-size:1.15rem}
+#logoText .k{font-size:2rem}
+.titlebox{flex:1;min-width:200px}
+.titlebox .t{font-family:Fredoka;font-weight:700;font-size:1.25rem;color:var(--navy)}
+.titlebox .s{font-size:.85rem;color:var(--muted)}
+.std{display:inline-block;background:var(--navy);color:#fff;border-radius:999px;padding:2px 10px;font-size:.75rem;font-weight:800;margin-top:3px}
+
+/* progress */
+.progress{background:var(--card);border-radius:16px;padding:10px 14px;box-shadow:0 4px 0 var(--line);margin-bottom:14px}
+.prow{display:flex;justify-content:space-between;font-weight:800;font-size:.9rem;color:var(--muted);margin-bottom:6px;gap:8px;flex-wrap:wrap}
+.bar{height:14px;background:#f1ead9;border-radius:999px;overflow:hidden}
+.bar>div{height:100%;background:linear-gradient(90deg,var(--gold),#ff8a3d,var(--ps));border-radius:999px;transition:width .5s}
+.keys{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
+.keys span{font-size:1.05rem;filter:grayscale(1) opacity(.35);transition:.3s}
+.keys span.on{filter:none;transform:scale(1.1)}
+
+/* cards */
+.card{background:var(--card);border-radius:22px;padding:20px 20px;box-shadow:0 5px 0 var(--line);margin-bottom:16px;position:relative}
+.card.teach{border-top:8px solid var(--gold)}
+.tag{display:inline-block;font-family:Fredoka;font-weight:600;font-size:.85rem;border-radius:999px;padding:3px 12px;color:#fff;background:var(--navy);margin-bottom:8px}
+.speak{float:right;border:none;background:var(--gold2);color:var(--navy);border-radius:999px;padding:8px 14px;font-weight:800;font-size:.9rem;cursor:pointer;margin:0 0 8px 10px;font-family:Nunito;box-shadow:0 3px 0 #e0b84a}
+.speak.playing{background:var(--navy);color:#fff;box-shadow:0 3px 0 #0d1533}
+.speak:active{transform:translateY(2px);box-shadow:none}
+.tip{background:#eef7ff;border-left:6px solid var(--seq);border-radius:12px;padding:12px 14px;margin:12px 0}
+.tip b{color:var(--navy)}
+.big{font-size:1.1rem}
+ul.clean{padding-left:22px;margin:.4em 0}
+ul.clean li{margin:.25em 0}
+
+/* structure colors */
+.c-desc{--c:var(--desc)} .c-seq{--c:var(--seq)} .c-comp{--c:var(--comp)} .c-ce{--c:var(--ce)} .c-ps{--c:var(--ps)}
+.struct-head{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.struct-head .ico{width:56px;height:56px;border-radius:16px;background:var(--c);color:#fff;display:grid;place-items:center;font-size:1.8rem;flex:none}
+.struct-head h2{margin:0;color:var(--c)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.chip{background:color-mix(in srgb,var(--c) 14%,#fff);color:var(--c);border:2px solid var(--c);border-radius:999px;padding:3px 12px;font-weight:800;font-size:.92rem}
+.example{background:#fffdf6;border:2px dashed var(--line);border-radius:16px;padding:14px 16px;margin:12px 0}
+.example .lbl{font-family:Fredoka;font-weight:600;color:var(--muted);font-size:.9rem;margin-bottom:4px}
+mark.sw{background:transparent;color:inherit;transition:.3s;border-radius:6px;padding:0 2px}
+.example.reveal mark.sw{background:color-mix(in srgb,var(--c) 22%,#fff);color:var(--c);font-weight:800;outline:2px solid var(--c)}
+.revealBtn{border:none;background:var(--c);color:#fff;border-radius:12px;padding:8px 14px;font-weight:800;font-family:Nunito;font-size:.95rem;cursor:pointer;margin-top:4px}
+
+/* organizers */
+.org{margin:14px 0;font-weight:800;font-size:.9rem;text-align:center}
+.org .box{background:color-mix(in srgb,var(--c) 14%,#fff);border:3px solid var(--c);color:var(--ink);border-radius:14px;padding:10px 8px}
+.org-desc{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;max-width:480px;margin-inline:auto}
+.org-desc .hub{grid-column:2;grid-row:2;background:var(--c);color:#fff;border-radius:50%;aspect-ratio:1;display:grid;place-items:center}
+.org-seq{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center}
+.arrow{font-size:1.6rem;color:var(--c);font-weight:900}
+.org-pair{display:flex;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap}
+.org-pair .box{min-width:150px}
+.venn{position:relative;height:170px;max-width:360px;margin:14px auto}
+.venn .cir{position:absolute;top:0;width:170px;height:170px;border-radius:50%;border:3px solid var(--c);background:color-mix(in srgb,var(--c) 12%,transparent);display:flex;align-items:center;padding:0 20px;font-weight:800;font-size:.85rem}
+.venn .l{left:calc(50% - 150px)} .venn .r{right:calc(50% - 150px);justify-content:flex-end;text-align:right}
+.venn .mid{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-weight:900;color:var(--c);font-size:.85rem}
+
+/* questions */
+.q{background:#fbf8f1;border-radius:18px;padding:16px;margin:16px 0;border:2px solid var(--line)}
+.q .qhead{display:flex;gap:10px;align-items:flex-start}
+.q .num{background:var(--navy);color:#fff;border-radius:10px;min-width:34px;height:34px;display:grid;place-items:center;font-family:Fredoka;font-weight:700;flex:none}
+.q .qt{font-weight:800;flex:1}
+.opts{display:grid;gap:10px;margin-top:12px}
+.opt{display:flex;gap:10px;align-items:center;text-align:left;width:100%;border:3px solid #ddd3bd;background:#fff;border-radius:14px;padding:12px 14px;font-size:1rem;font-family:Nunito;font-weight:700;color:var(--ink);cursor:pointer;transition:.15s;min-height:52px}
+.opt:hover:not(:disabled){border-color:var(--gold);background:#fffaf0}
+.opt .let{width:30px;height:30px;border-radius:50%;background:#efe7d4;display:grid;place-items:center;font-family:Fredoka;flex:none}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--ok);background:#e8f8ef}
+.opt.right .let{background:var(--ok);color:#fff}
+.opt.wrong{border-color:var(--no);background:#fdecec}
+.opt.wrong .let{background:var(--no);color:#fff}
+.opt.dim{opacity:.55}
+.fb{margin-top:12px;border-radius:14px;padding:12px 14px;font-weight:600;display:none}
+.fb.show{display:block}
+.fb.good{background:#e8f8ef;border-left:6px solid var(--ok)}
+.fb.bad{background:#fff3e6;border-left:6px solid var(--ce)}
+.fb .v{font-family:Fredoka;font-weight:700;font-size:1.05rem;display:block;margin-bottom:2px}
+.lock{font-size:.85rem;color:var(--muted);font-weight:700;margin-top:6px}
+
+/* passage */
+.passage{background:#fffdf6;border:3px solid var(--navy);border-radius:18px;padding:16px 18px;margin:10px 0}
+.passage h3{text-align:center;margin-top:0}
+.passage p{margin:.6em 0}
+.pn{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;font-size:.8rem;font-weight:800;margin-right:6px;vertical-align:2px}
+
+/* sort game */
+.sortword{font-family:Fredoka;font-weight:700;font-size:1.7rem;text-align:center;color:var(--navy);background:linear-gradient(135deg,#fff3cf,#ffe1a1);border-radius:18px;padding:18px;margin:10px 0;border:3px solid var(--gold)}
+.sortbtns{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.sbtn{border:none;border-radius:14px;padding:14px 10px;font-family:Nunito;font-weight:800;font-size:1rem;color:#fff;background:var(--c);cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.18)}
+.sbtn:disabled{opacity:.4;cursor:default}
+.sbtn:active:not(:disabled){transform:translateY(3px);box-shadow:none}
+.sorted{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.sorted span{border-radius:999px;padding:3px 10px;font-weight:800;font-size:.85rem;color:#fff}
+
+/* nav */
+.nav{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);border-top:3px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom));display:flex;justify-content:center;gap:12px;z-index:20}
+.nav button{font-family:Fredoka;font-weight:700;font-size:1.1rem;border:none;border-radius:16px;padding:12px 22px;cursor:pointer}
+#prevBtn{background:#efe7d4;color:var(--navy)}
+#nextBtn{background:var(--navy);color:#fff;box-shadow:0 4px 0 #0d1533;min-width:190px}
+#nextBtn:disabled{background:#b9bccb;box-shadow:none;cursor:not-allowed}
+.navhint{position:fixed;bottom:76px;left:0;right:0;text-align:center;font-weight:800;color:var(--ce);font-size:.9rem;pointer-events:none;z-index:19}
+
+/* results */
+.score{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:14px 0}
+.score div{background:#fbf8f1;border-radius:16px;padding:14px;text-align:center;border:2px solid var(--line)}
+.score b{display:block;font-family:Fredoka;font-size:2rem;color:var(--navy)}
+.badge{font-size:4rem;text-align:center;animation:pop 1s ease}
+@keyframes pop{0%{transform:scale(.2) rotate(-30deg)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
+.saved{position:fixed;top:10px;right:12px;background:var(--ok);color:#fff;font-weight:800;font-size:.8rem;border-radius:999px;padding:4px 12px;opacity:0;transition:.4s;z-index:30}
+.saved.show{opacity:1}
+footer{text-align:center;font-size:.8rem;color:var(--muted);margin-top:20px}
+footer button{background:none;border:none;color:var(--muted);text-decoration:underline;font-size:.8rem;cursor:pointer}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
+table.fx{width:100%;border-collapse:collapse;margin:10px 0;font-size:.95rem}
+table.fx td,table.fx th{border:2px solid var(--line);padding:8px;text-align:left;vertical-align:top}
+table.fx th{background:var(--navy);color:#fff;font-family:Fredoka;font-weight:600}
+@media (max-width:560px){
+  body{font-size:17px} h1{font-size:1.55rem} h2{font-size:1.35rem}
+  .card{padding:16px 14px}
+  #logo{height:58px}
+  .venn{transform:scale(.85);transform-origin:center top;height:150px}
+  .nav button{padding:12px 14px;font-size:1rem} #nextBtn{min-width:150px}
+  .speak{float:none;display:inline-block;margin:0 0 8px 0}
+}
+</style>
+</head>
+<body>
+<canvas id="confetti"></canvas>
+<div class="saved" id="saved">✓ Saved</div>
+<div class="wrap">
+  <header class="top">
+    <img id="logo" src="logo.png" alt="The Literacy Locksmith" onerror="this.style.display='none';document.getElementById('logoText').style.display='flex'">
+    <div id="logoText"><span class="k">🔑</span><span>The Literacy Locksmith</span></div>
+    <div class="titlebox">
+      <div class="t">Unlock the Blueprint</div>
+      <div class="s">Text Structures &amp; Signal Words · Grade 6 ELA · about 30 minutes</div>
+      <span class="std">Florida B.E.S.T. ELA.6.R.2.1</span>
+    </div>
+  </header>
+
+  <div class="progress">
+    <div class="prow"><span id="stepLabel">Step 1</span><span id="keyLabel">Keys: 0</span></div>
+    <div class="bar"><div id="barFill" style="width:0%"></div></div>
+    <div class="keys" id="keys"></div>
+  </div>
+
+  <main id="stage"></main>
+
+  <footer>
+    The Literacy Locksmith · created and copyrighted by Donna Rees<br>
+    <button id="resetBtn">Teacher: erase saved answers on this iPad</button>
+  </footer>
+</div>
+<div class="navhint" id="navhint"></div>
+<nav class="nav">
+  <button id="prevBtn">← Back</button>
+  <button id="nextBtn">Next →</button>
+</nav>
+
+<script>
+/* ============ CONTENT ============ */
+const STRUCTS = {
+  desc:{name:"Description", ico:"🔍", cls:"c-desc"},
+  seq:{name:"Sequence / Chronological", short:"Sequence", ico:"🔢", cls:"c-seq"},
+  comp:{name:"Compare & Contrast", ico:"⚖️", cls:"c-comp"},
+  ce:{name:"Cause & Effect", ico:"💥", cls:"c-ce"},
+  ps:{name:"Problem & Solution", ico:"🔧", cls:"c-ps"}
+};
+const LETTERS = ["A","B","C","D"];
+
+const STEPS = [
+/* 0 */ {title:"Welcome, Locksmith!", html:`
+<div class="card teach">
+  <button class="speak" data-read="self">🔊 Read to me</button>
+  <span class="tag">Start Here</span>
+  <h1>Welcome, Locksmith! 🔑</h1>
+  <p class="big">Every informational text has a hidden <b>blueprint</b>. Authors don’t just toss facts onto a page. They <b>build</b> their writing in a certain shape, called a <b>text structure</b>.</p>
+  <p>Today you will learn the <b>5 text structures</b>, the <b>signal words</b> that give each one away, and how an author’s structure helps the author’s <b>purpose</b>.</p>
+  <h3>How this works</h3>
+  <ul class="clean">
+    <li>🔊 Tap <b>Read to me</b> on any box to hear it out loud.</li>
+    <li>📖 Read each lesson, then answer the <b>Quick Check</b>. You get <b>one try</b>, so think first!</li>
+    <li>💡 After every answer, read the <b>Locksmith Tip</b>. It teaches you why.</li>
+    <li>🔑 Finish a step to earn a key. Collect them all to unlock the vault!</li>
+    <li>💾 Your work saves on this iPad by itself. If you leave, you can come back and pick up where you stopped.</li>
+  </ul>
+  <div class="tip"><b>Your goal:</b> By the end, you will be able to read a passage, name its structure, and explain how that structure helps the author’s purpose.</div>
+</div>`},
+
+/* 1 */ {title:"What Is Text Structure?", html:`
+<div class="card teach">
+  <button class="speak" data-read="self">🔊 Read to me</button>
+  <span class="tag">Lesson</span>
+  <h2>What is text structure?</h2>
+  <p><b>Text structure</b> is the way an author <b>organizes</b> information in a text.</p>
+  <p>Think about building a house. A builder follows a blueprint so every room goes in the right place. Authors do the same thing. Before they write, they choose a shape for their ideas.</p>
+  <p>There are <b>5 common structures</b>:</p>
+  <div class="chips">
+    <span class="chip c-desc">🔍 Description</span>
+    <span class="chip c-seq">🔢 Sequence / Chronological</span>
+    <span class="chip c-comp">⚖️ Compare &amp; Contrast</span>
+    <span class="chip c-ce">💥 Cause &amp; Effect</span>
+    <span class="chip c-ps">🔧 Problem &amp; Solution</span>
+  </div>
+  <p><b>Signal words</b> are clue words that hint at the structure. Words like <i>first</i> and <i>finally</i> signal time order. Words like <i>however</i> signal a difference.</p>
+  <div class="tip"><b>Why does this matter?</b> When you know the structure, you know what to look for. It helps you find the main idea, remember details, and answer test questions like “How does the structure help the author’s purpose?”</div>
+</div>`,
+ qs:[{id:"c1",q:"Text structure is best described as…",opts:["the way an author organizes information","the number of paragraphs in a text","the title and the headings","the author’s opinion about the topic"],a:0,
+ why:"Text structure is the <b>organization</b>, the blueprint, of a text. Headings and paragraphs can help show structure, but they are not the structure itself."}]},
+
+/* 2 */ {title:"Description", struct:"desc", html:`
+<div class="card teach c-desc">
+  <button class="speak" data-read="self">🔊 Read to me</button>
+  <div class="struct-head"><div class="ico">🔍</div><h2>Description</h2></div>
+  <p><b>What it does:</b> The author tells what something <b>is like</b>. The text gives features, details, and examples about one topic.</p>
+  <p><b>Question it answers:</b> What is it? What does it look like? What are its traits?</p>
+  <div class="org org-desc">
+    <div class="box">detail</div><div></div><div class="box">detail</div>
+    <div class="box">example</div><div class="hub">TOPIC</div><div class="box">feature</div>
+    <div></div><div class="box">detail</div><div></div>
+  </div>
+  <b>Signal words:</b>
+  <div class="chips"><span class="chip">for example</span><span class="chip">such as</span><span class="chip">for instance</span><span class="chip">is characterized by</span><span class="chip">includes</span><span class="chip">in addition</span><span class="chip">also</span><span class="chip">looks like</span><span class="chip">specifically</span></div>
+  <div class="example" id="ex-desc">
+    <div class="lbl">Example passage</div>
+    <p data-readable>The Florida manatee is a large, gentle marine mammal. It <mark class="sw">is characterized by</mark> a round, paddle-shaped tail and a wrinkled, gray body. <mark class="sw">For example</mark>, an adult manatee can be about ten feet long and weigh more than 1,000 pounds. Manatees <mark class="sw">also</mark> have tiny eyes and stiff whiskers, which they use to feel for food <mark class="sw">such as</mark> sea grass.</p>
+    <button class="revealBtn" data-reveal="ex-desc">✨ Show the signal words</button>
+  </div>
+  <div class="tip"><b>Locksmith Tip:</b> In a description text, every detail points back to <b>one</b> topic. Here, every sentence tells us something about manatees.</div>
+</div>`,
+ qs:[{id:"c2",q:"What is the main job of the manatee passage?",opts:["to tell the steps in a manatee’s life","to describe what manatees are like","to compare manatees to dolphins","to explain a problem manatees face"],a:1,
+ why:"Every sentence gives a <b>feature</b> of manatees: their tail, body, size, eyes, and whiskers. There are no steps, no second animal, and no problem. That makes it <b>description</b>."}]},
+
+/* 3 */ {title:"Sequence / Chronological", struct:"seq", html:`
+<div class="card teach c-seq">
+  <button class="speak" data-read="self">🔊 Read to me</button>
+  <div class="struct-head"><div class="ico">🔢</div><h2>Sequence / Chronological</h2></div>
+  <p><b>What it does:</b> The author puts events or steps in <b>order</b>. <i>Sequence</i> is often steps in a process. <i>Chronological</i> means time order, like events in history.</p>
+  <p><b>Question it answers:</b> What happened first, next, and last? What are the steps?</p>
+  <div class="org org-seq"><div class="box">1 First</div><span class="arrow">→</span><div class="box">2 Next</div><span class="arrow">→</span><div class="box">3 Then</div><span class="arrow">→</span><div class="box">4 Finally</div></div>
+  <b>Signal words:</b>
+  <div class="chips"><span class="chip">first</span><span class="chip">next</span><span class="chip">then</span><span class="chip">after</span><span class="chip">before</span><span class="chip">later</span><span class="chip">during</span><span class="chip">meanwhile</span><span class="chip">finally</span><span class="chip">dates (in 1969)</span></div>
+  <div class="example" id="ex-seq">
+    <div class="lbl">Example passage</div>
+    <p data-readable>Sea turtle nesting follows the same steps every summer. <mark class="sw">First</mark>, a female loggerhead crawls onto a Florida beach at night. <mark class="sw">Next</mark>, she digs a deep hole with her back flippers. <mark class="sw">Then</mark> she lays about 100 eggs and covers them with sand. About two months <mark class="sw">later</mark>, the hatchlings break out of their shells. <mark class="sw">Finally</mark>, they scramble toward the bright ocean horizon.</p>
+    <button class="revealBtn" data-reveal="ex-seq">✨ Show the signal words</button>
+  </div>
+  <div class="tip"><b>Locksmith Tip:</b> Ask yourself, “Would the text stop making sense if I mixed up the order?” If yes, it is probably sequence or chronological.</div>
+</div>`,
+ qs:[{id:"c3",q:"Which group of words from the passage are sequence signal words?",opts:["However, in contrast","First, Next, Finally","As a result, because","For example, such as"],a:1,
+ why:"<b>First, Next, Then, Later,</b> and <b>Finally</b> show the order of the nesting steps. The other choices signal contrast, cause and effect, and description."}]},
+
+/* 4 */ {title:"Compare & Contrast", struct:"comp", html:`
+<div class="card teach c-comp">
+  <button class="speak" data-read="self">🔊 Read to me</button>
+  <div class="struct-head"><div class="ico">⚖️</div><h2>Compare &amp; Contrast</h2></div>
+  <p><b>What it does:</b> The author shows how two or more things are <b>alike</b> (compare) and <b>different</b> (contrast).</p>
+  <p><b>Question it answers:</b> How are these the same? How are they different?</p>
+  <div class="venn"><div class="cir l">Thing A only</div><div class="cir r">Thing B only</div><div class="mid">BOTH</div></div>
+  <b>Signal words for alike:</b>
+  <div class="chips"><span class="chip">both</span><span class="chip">similarly</span><span class="chip">likewise</span><span class="chip">alike</span><span class="chip">also</span><span class="chip">in the same way</span></div>
+  <b>Signal words for different:</b>
+  <div class="chips"><span class="chip">however</span><span class="chip">but</span><span class="chip">unlike</span><span class="chip">while</span><span class="chip">whereas</span><span class="chip">in contrast</span><span class="chip">on the other hand</span></div>
+  <div class="example" id="ex-comp">
+    <div class="lbl">Example passage</div>
+    <p data-readable>Florida is the only place in the United States where alligators and crocodiles live side by side. <mark class="sw">Both</mark> are reptiles with powerful jaws, and <mark class="sw">both</mark> spend time in water and on land. <mark class="sw">However</mark>, they are not twins. Alligators have wide, U-shaped snouts, <mark class="sw">while</mark> crocodiles have narrow, V-shaped snouts. Alligators usually live in freshwater ponds and swamps. <mark class="sw">In contrast</mark>, crocodiles are usually found in salty coastal waters.</p>
+    <button class="revealBtn" data-reveal="ex-comp">✨ Show the signal words</button>
+  </div>
+  <div class="tip"><b>Locksmith Tip:</b> Look for <b>two</b> (or more) topics getting equal attention. If the text keeps bouncing back and forth between them, it is compare and contrast.</div>
+</div>`,
+ qs:[{id:"c4",q:"Which sentence from the passage shows a DIFFERENCE?",opts:["“Both are reptiles with powerful jaws.”","“Alligators have wide, U-shaped snouts, while crocodiles have narrow, V-shaped snouts.”","“Florida is the only place in the United States where alligators and crocodiles live side by side.”","“Both spend time in water and on land.”"],a:1,
+ why:"The signal word <b>while</b> sets up a contrast: U-shaped snouts versus V-shaped snouts. The sentences with <b>both</b> show how they are alike."}]},
+
+/* 5 */ {title:"Cause & Effect", struct:"ce", html:`
+<div class="card teach c-ce">
+  <button class="speak" data-read="self">🔊 Read to me</button>
+  <div class="struct-head"><div class="ico">💥</div><h2>Cause &amp; Effect</h2></div>
+  <p><b>What it does:</b> The author explains <b>why</b> something happens (the cause) and <b>what happens because of it</b> (the effect).</p>
+  <p><b>Question it answers:</b> Why did this happen? What was the result?</p>
+  <div class="org org-pair"><div class="box">CAUSE<br><small>why it happened</small></div><span class="arrow">➜</span><div class="box">EFFECT<br><small>what happened</small></div></div>
+  <b>Signal words:</b>
+  <div class="chips"><span class="chip">because</span><span class="chip">so</span><span class="chip">since</span><span class="chip">as a result</span><span class="chip">therefore</span><span class="chip">consequently</span><span class="chip">due to</span><span class="chip">led to</span><span class="chip">this caused</span><span class="chip">if… then</span></div>
+  <div class="example" id="ex-ce">
+    <div class="lbl">Example passage</div>
+    <p data-readable>Much of Florida sits on top of limestone, a rock that slowly dissolves in water. When rainwater soaks into the ground, it becomes slightly acidic. <mark class="sw">As a result</mark>, the water eats away at the limestone and creates hidden spaces underground. <mark class="sw">If</mark> the ground above becomes too heavy, it can collapse. <mark class="sw">This causes</mark> a sinkhole to open, sometimes overnight. <mark class="sw">Because of</mark> this, builders often test the ground before they build new homes.</p>
+    <button class="revealBtn" data-reveal="ex-ce">✨ Show the signal words</button>
+  </div>
+  <div class="tip"><b>Locksmith Tip:</b> Cause and effect is often a <b>chain</b>. One effect becomes the cause of the next thing: acidic rain → holes in limestone → collapse → sinkhole → builders test the ground.</div>
+</div>`,
+ qs:[{id:"c5",q:"According to the passage, what is the EFFECT of acidic rainwater soaking into limestone?",opts:["Builders stop testing the ground.","Hidden spaces form underground.","The rain becomes less acidic.","The limestone gets heavier."],a:1,
+ why:"The signal phrase <b>As a result</b> points to the effect: the water eats away the limestone and creates <b>hidden spaces underground</b>."}]},
+
+/* 6 */ {title:"Problem & Solution", struct:"ps", html:`
+<div class="card teach c-ps">
+  <button class="speak" data-read="self">🔊 Read to me</button>
+  <div class="struct-head"><div class="ico">🔧</div><h2>Problem &amp; Solution</h2></div>
+  <p><b>What it does:</b> The author describes a <b>problem</b> and then explains one or more ways to <b>solve</b> it.</p>
+  <p><b>Question it answers:</b> What is wrong? How can people fix it?</p>
+  <div class="org org-pair"><div class="box">PROBLEM<br><small>what is wrong</small></div><span class="arrow">➜</span><div class="box">SOLUTION 🔑<br><small>how to fix it</small></div></div>
+  <b>Signal words:</b>
+  <div class="chips"><span class="chip">problem</span><span class="chip">issue</span><span class="chip">challenge</span><span class="chip">threat</span><span class="chip">solution</span><span class="chip">solve</span><span class="chip">to fix this</span><span class="chip">one answer is</span><span class="chip">in order to</span><span class="chip">resolved</span></div>
+  <div class="example" id="ex-ps">
+    <div class="lbl">Example passage</div>
+    <p data-readable>Burmese pythons are a serious <mark class="sw">problem</mark> in the Everglades. These giant snakes are not native to Florida, and they eat birds, rabbits, and even deer. The <mark class="sw">problem</mark> is that pythons have almost no natural predators here, so their numbers keep growing. <mark class="sw">To solve this</mark>, Florida pays trained hunters to remove pythons. Scientists are also using tracking devices to find where the snakes hide. One <mark class="sw">solution</mark> alone will not fix the <mark class="sw">issue</mark>, but together these efforts help protect native animals.</p>
+    <button class="revealBtn" data-reveal="ex-ps">✨ Show the signal words</button>
+  </div>
+  <div class="tip"><b>Locksmith Tip:</b> Problem and solution texts often want readers to <b>care</b> or <b>take action</b>. Watch for people working to fix something.</div>
+</div>`,
+ qs:[{id:"c6",q:"Which phrase tells the reader that a solution is coming?",opts:["“are a serious problem”","“they eat birds, rabbits, and even deer”","“To solve this”","“are not native to Florida”"],a:2,
+ why:"<b>To solve this</b> is a solution signal. Right after it, the author explains how Florida is fighting back against the pythons."}]},
+
+/* 7 */ {title:"Locksmith Tricks", html:`
+<div class="card teach">
+  <button class="speak" data-read="self">🔊 Read to me</button>
+  <span class="tag">Lesson</span>
+  <h2>🧠 Three Locksmith Tricks</h2>
+  <p>Signal words are great clues, but test writers know students hunt for them. Use these tricks so you don’t get fooled.</p>
+  <h3>Trick 1: Signal words are clues, not proof.</h3>
+  <p>The python passage used the word <b>so</b>, which is a cause and effect word. But the <b>main job</b> of that paragraph is to show a problem and how people are fixing it. Always ask: <b>What is the whole paragraph doing?</b></p>
+  <h3>Trick 2: Texts can mix structures.</h3>
+  <p>A whole article might be problem and solution, but one paragraph inside it might use cause and effect to explain <i>why</i> the problem happened. Questions often ask about <b>one paragraph</b>, so read the question carefully.</p>
+  <h3>Trick 3: Cause/effect vs. problem/solution</h3>
+  <table class="fx">
+    <tr><th>Cause &amp; Effect</th><th>Problem &amp; Solution</th></tr>
+    <tr><td>Explains <b>why</b> something happened and what it led to.</td><td>Names something <b>wrong</b> and shows people <b>trying to fix it</b>.</td></tr>
+    <tr><td>Rain dissolves limestone → sinkholes form.</td><td>Pythons harm wildlife → hunters remove them.</td></tr>
+  </table>
+  <div class="tip"><b>The big question:</b> Is anyone trying to <b>fix</b> something? If yes, think problem and solution. If the text only explains <b>why</b> and <b>what happened</b>, think cause and effect.</div>
+</div>`,
+ qs:[{id:"c7",q:"The python passage uses the word “so.” Why is its overall structure still problem and solution?",opts:["because “so” is always a problem and solution word","because the passage mainly presents a problem and the ways people are fixing it","because the passage has more than three sentences","because the passage is about animals"],a:1,
+ why:"Judge the structure by the <b>main job</b> of the whole passage. One small signal word does not change the blueprint."},
+ {id:"c8",q:"A paragraph explains that a freeze in January damaged orange trees, which led to higher orange juice prices. No one tries to fix anything. What is the structure?",opts:["Problem & Solution","Description","Cause & Effect","Compare & Contrast"],a:2,
+ why:"The freeze is the <b>cause</b>. Damaged trees and higher prices are the <b>effects</b>. Since nobody tries to solve anything, it is <b>cause and effect</b>, not problem and solution."}]},
+
+/* 8 */ {title:"Signal Word Sort", type:"sort"},
+
+/* 9 */ {title:"Structure + Purpose", html:`
+<div class="card teach">
+  <button class="speak" data-read="self">🔊 Read to me</button>
+  <span class="tag">Lesson</span>
+  <h2>🎯 How structure helps the author’s purpose</h2>
+  <p>Your Florida standard asks you to <b>explain how text structures and text features contribute to the author’s purpose</b>. “Contribute” means <b>help</b>. So the real question is: <b>Why did the author choose this blueprint?</b></p>
+  <table class="fx">
+    <tr><th>If the author wants to…</th><th>A good structure is…</th></tr>
+    <tr><td>help you picture or understand a topic</td><td>🔍 Description</td></tr>
+    <tr><td>show how events happened over time or teach steps</td><td>🔢 Sequence / Chronological</td></tr>
+    <tr><td>help you weigh two things or make a choice</td><td>⚖️ Compare &amp; Contrast</td></tr>
+    <tr><td>explain why something happens</td><td>💥 Cause &amp; Effect</td></tr>
+    <tr><td>make you care about an issue or take action</td><td>🔧 Problem &amp; Solution</td></tr>
+  </table>
+  <h3>Text features help, too</h3>
+  <p><b>Text features</b> are the extra parts that help readers, like <b>headings, bold words, captions, diagrams, timelines, charts,</b> and <b>bulleted lists</b>. Features often match the structure. A <b>timeline</b> fits chronological order. A <b>Venn diagram</b> or two-column <b>chart</b> fits compare and contrast. Headings like “The Problem” and “The Solution” show problem and solution.</p>
+  <div class="tip"><b>3-step strategy for “How does the structure contribute…” questions:</b><br>
+  1️⃣ Name the structure.<br>
+  2️⃣ Ask, “What does this structure help the reader understand?”<br>
+  3️⃣ Pick the answer that names <b>both</b> the structure <b>and</b> what it helps the reader understand. Wrong answers often name the wrong structure or give a purpose that does not fit the text.</div>
+</div>`,
+ qs:[{id:"c9",q:"An author wants readers to understand how Florida’s panther population dropped and then slowly recovered over the last 50 years. Which structure would BEST help this purpose?",opts:["Chronological, because it shows changes in time order","Description, because it tells what panthers look like","Compare & Contrast, because it shows two animals","Problem & Solution, because it lists signal words"],a:0,
+ why:"“Over the last 50 years” is all about <b>time</b>. Chronological order lets the reader follow the changes from past to present."},
+ {id:"c10",q:"An article has two headings: “The Problem: Plastic on Our Beaches” and “The Solution: Community Cleanups.” How do these text features help the author’s purpose?",opts:["They show the steps for building a beach.","They organize the text by problem and solution, guiding readers toward ways to help.","They compare two different beaches.","They describe what plastic looks like."],a:1,
+ why:"The headings are text features that show a <b>problem and solution</b> structure. This structure helps the author move readers from seeing the issue to learning how to help."}]},
+
+/* 10 */ {title:"Vault Challenge: Part 1", challenge:true, html:`
+<div class="card">
+  <span class="tag" style="background:var(--ps)">🔒 Vault Challenge · Part 1 of 3</span>
+  <h2>Show what you know!</h2>
+  <p>Now it’s all you. Read the passage, then answer the questions. <b>One try each.</b> Use your Locksmith Tricks!</p>
+  <button class="speak" data-read="#pass1">🔊 Read the passage</button>
+  <div class="passage" id="pass1">
+    <h3>Racing to the Stars: Florida’s Space Coast</h3>
+    <p><span class="pn">1</span>For more than seventy years, Florida’s Space Coast has been a launch pad for American space exploration. The story of Cape Canaveral shows how a quiet stretch of beach became one of the busiest spaceports in the world.</p>
+    <p><span class="pn">2</span>In 1950, the first rocket launched from Cape Canaveral. It was a small rocket called Bumper 8. During the next ten years, engineers built more launch pads and tested bigger rockets. Then, in 1961, Alan Shepard blasted off from the Cape and became the first American in space.</p>
+    <p><span class="pn">3</span>Later that decade, the Apollo program took over the Cape. On July 16, 1969, Apollo 11 lifted off from Kennedy Space Center. Four days later, astronauts Neil Armstrong and Buzz Aldrin landed on the Moon.</p>
+    <p><span class="pn">4</span>After the Apollo program ended, NASA began launching space shuttles in 1981. The shuttles flew for thirty years. Today, private companies launch rockets from the same coast, and launches happen more often than ever before.</p>
+  </div>
+</div>`,
+ qs:[{id:"p1",q:"Which text structure does the author mainly use in this passage?",opts:["Compare & Contrast","Chronological","Problem & Solution","Description"],a:1,
+ why:"Dates (1950, 1961, 1969, 1981) and signal words (<b>then, later, after, today</b>) show the passage moves through events in <b>time order</b>."},
+ {id:"p2",q:"How does the structure of paragraphs 2–4 contribute to the author’s purpose?",opts:["It compares two rockets to show which one was better.","It describes the beach so readers can picture it.","It presents events in time order to show how the Space Coast grew over many years.","It explains a problem with rockets and how engineers solved it."],a:2,
+ why:"Paragraph 1 says the purpose: to show how a quiet beach <b>became</b> a busy spaceport. Putting events in <b>time order</b> lets readers watch that growth happen step by step."},
+ {id:"p3",q:"Which words from paragraph 3 signal time order?",opts:["“Later that decade” and “Four days later”","“took over” and “lifted off”","“astronauts” and “Moon”","“Apollo program” and “Kennedy Space Center”"],a:0,
+ why:"<b>Later that decade</b> and <b>Four days later</b> tell <i>when</i> things happened. The other choices are actions or names, not time signals."},
+ {id:"p4",q:"Which text feature would BEST support the author’s purpose?",opts:["a Venn diagram comparing two astronauts","a timeline of important launches from 1950 to today","a glossary defining the word “rocket”","a pie chart of rocket colors"],a:1,
+ why:"A <b>timeline</b> matches a chronological structure. It would let readers see the Space Coast’s history at a glance."}]},
+
+/* 11 */ {title:"Vault Challenge: Part 2", challenge:true, html:`
+<div class="card">
+  <span class="tag" style="background:var(--ps)">🔒 Vault Challenge · Part 2 of 3</span>
+  <button class="speak" data-read="#pass2">🔊 Read the passage</button>
+  <div class="passage" id="pass2">
+    <h3>Rescuing Florida’s Reef</h3>
+    <p><span class="pn">1</span>Florida’s Coral Reef stretches about 350 miles along the state’s coast. It is the only coral barrier reef in the continental United States. But this underwater treasure is in trouble.</p>
+    <p><span class="pn">2</span>Corals are tiny animals that need clean, cool water to survive. When ocean water gets too warm, corals lose the colorful algae that live inside them and help feed them. As a result, the corals turn white. This is called bleaching. If the water stays hot for too long, the corals can die.</p>
+    <p><span class="pn">3</span>Scientists and volunteers are working to solve this problem. One solution is coral gardening. Divers grow baby corals in underwater nurseries, and then they plant the healthy corals back onto the reef. Another solution is protecting the water itself. Communities are working to reduce pollution that washes into the ocean from land.</p>
+    <p><span class="pn">4</span>Saving the reef will take many years. However, each new coral planted gives the reef a better chance to survive for future generations.</p>
+  </div>
+</div>`,
+ qs:[{id:"p5",q:"What is the OVERALL structure of the whole passage?",opts:["Problem & Solution","Chronological","Compare & Contrast","Description"],a:0,
+ why:"The passage names a <b>problem</b> (the reef is in trouble) and then explains <b>solutions</b> (coral gardening and reducing pollution)."},
+ {id:"p6",q:"Which structure does paragraph 2 mainly use?",opts:["Compare & Contrast","Problem & Solution","Cause & Effect","Sequence"],a:2,
+ why:"Paragraph 2 explains <b>why</b> bleaching happens: warm water (cause) → corals lose algae → corals turn white (<b>As a result</b>). Remember Trick 2: one paragraph can use a different structure than the whole text."},
+ {id:"p7",q:"How does paragraph 3 contribute to the author’s purpose?",opts:["It compares corals to algae to show which is more important.","It describes the colors of the reef.","It lists the history of the reef in time order.","It presents ways people are fixing the reef’s problem, showing readers there is hope."],a:3,
+ why:"Paragraph 3 gives <b>solutions</b>. This helps the author move readers from worry to hope, and it shows that people can help."},
+ {id:"p8",q:"In paragraph 4, the author uses the word “However” to…",opts:["give an example of a coral","show a contrast between the long work ahead and the hope each new coral brings","tell the next step in coral gardening","explain what causes bleaching"],a:1,
+ why:"<b>However</b> is a contrast signal. It sets the hard news (it will take many years) against the hopeful news (each coral helps)."}]},
+
+/* 12 */ {title:"Vault Challenge: Part 3", challenge:true, html:`
+<div class="card">
+  <span class="tag" style="background:var(--ps)">🔒 Vault Challenge · Part 3 of 3</span>
+  <h2>Final Lock: Name that structure</h2>
+  <p>Read each short paragraph. Then pick its structure.</p>
+</div>`,
+ qs:[{id:"p9",passage:"Lightning strikes Florida more often than almost any other state. Because warm, wet air rises quickly over the land on summer afternoons, huge storm clouds form. Consequently, Floridians learn to head indoors when thunder roars.",
+ q:"What is the structure of this paragraph?",opts:["Description","Cause & Effect","Problem & Solution","Sequence"],a:1,
+ why:"<b>Because</b> and <b>Consequently</b> signal cause and effect: rising warm air causes storm clouds, and storms cause people to head indoors."},
+ {id:"p10",passage:"Oranges and grapefruits are both citrus fruits grown in Florida. Both grow on trees and are full of vitamin C. Oranges are sweet and easy to peel. Grapefruits, on the other hand, are larger and taste more sour.",
+ q:"What is the structure of this paragraph?",opts:["Compare & Contrast","Chronological","Cause & Effect","Problem & Solution"],a:0,
+ why:"Two fruits get equal attention. <b>Both</b> shows how they are alike, and <b>on the other hand</b> shows how they are different."}]},
+
+/* 13 */ {title:"Vault Unlocked!", type:"results"}
+];
+
+const SORT_WORDS = [
+  {w:"for example",a:"desc"},{w:"finally",a:"seq"},{w:"in contrast",a:"comp"},{w:"as a result",a:"ce"},{w:"to fix this",a:"ps"},
+  {w:"such as",a:"desc"},{w:"meanwhile",a:"seq"},{w:"similarly",a:"comp"},{w:"consequently",a:"ce"},{w:"one solution is",a:"ps"}
+];
+const SORT_WHY = {
+  desc:"It introduces details or examples about a topic.",
+  seq:"It tells <i>when</i> something happens in an order of events.",
+  comp:"It shows how things are alike or different.",
+  ce:"It shows a result or why something happened.",
+  ps:"It points to a way to fix a problem."
+};
+
+/* ============ STATE + AUTOSAVE ============ */
+const KEY = "ll_textstructures_6R21_v1";
+let state = {step:0, answers:{}, sort:{}, maxStep:0, celebrated:false};
+try{ const s = JSON.parse(localStorage.getItem(KEY)||"null"); if(s && typeof s==="object") state = Object.assign(state,s); }catch(e){}
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify(state)); flashSaved(); }catch(e){}
+}
+let savedT;
+function flashSaved(){ const el=document.getElementById("saved"); el.classList.add("show"); clearTimeout(savedT); savedT=setTimeout(()=>el.classList.remove("show"),1200); }
+
+/* ============ READ ALOUD (Google US English) ============ */
+let voice=null;
+function pickVoice(){
+  const vs = speechSynthesis.getVoices();
+  voice = vs.find(v=>v.name==="Google US English")
+       || vs.find(v=>v.lang==="en-US" && /Samantha/i.test(v.name))
+       || vs.find(v=>v.lang==="en-US" && !/male|fred|alex|daniel/i.test(v.name))
+       || null;
+}
+if("speechSynthesis" in window){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+let speakingBtn=null;
+function cleanForSpeech(t){
+  return t.replace(/ELA\.[A-Z0-9.]+/gi,"")
+          .replace(/B\.E\.S\.T\./g,"BEST")
+          .replace(/🔊[^\n]*/g,"")
+          .replace(/([123])️?⃣/g,"$1.")
+          .replace(/[\u{1F300}-\u{1FAFF}☀-➿←-⇿️]/gu,"")
+          .replace(/\s+/g," ").trim();
+}
+function stopSpeech(){ if("speechSynthesis" in window) speechSynthesis.cancel(); if(speakingBtn){speakingBtn.classList.remove("playing"); speakingBtn.textContent=speakingBtn.dataset.label;} speakingBtn=null; }
+function speak(text, btn){
+  if(!("speechSynthesis" in window)){ alert("Read aloud is not available on this device."); return; }
+  if(speakingBtn===btn){ stopSpeech(); return; }
+  stopSpeech();
+  const chunks = cleanForSpeech(text).match(/[^.!?]+[.!?]*["”’)]*\s*/g) || [text];
+  speakingBtn=btn; if(btn){ btn.dataset.label=btn.dataset.label||btn.textContent; btn.classList.add("playing"); btn.textContent="⏹ Stop"; }
+  chunks.forEach((c,i)=>{
+    const u = new SpeechSynthesisUtterance(c.trim());
+    if(voice) u.voice=voice; u.lang="en-US"; u.rate=0.95; u.pitch=1;
+    if(i===chunks.length-1) u.onend=()=>{ if(speakingBtn===btn) stopSpeech(); };
+    speechSynthesis.speak(u);
+  });
+}
+function textOf(el){
+  const c = el.cloneNode(true);
+  c.querySelectorAll(".speak,.revealBtn,.pn,.lock,.fb:not(.show)").forEach(n=>n.remove());
+  c.querySelectorAll("td,th,li,.box,.chip,h1,h2,h3,p,.cir,.mid").forEach(n=>n.append(". "));
+  return c.innerText || c.textContent;
+}
+
+/* ============ RENDER ============ */
+const stage = document.getElementById("stage");
+function qHTML(q, n){
+  const ans = state.answers[q.id];
+  const done = ans!==undefined;
+  let h = `<div class="q" id="q-${q.id}">`;
+  if(q.passage) h += `<div class="passage" style="border-width:2px"><p>${q.passage}</p></div>`;
+  h += `<div class="qhead"><div class="num">${n}</div><div class="qt">${q.q}</div></div>
+  <button class="speak" data-readq="${q.id}" style="float:none;margin-top:8px">🔊 Read question</button>
+  <div class="opts">`;
+  q.opts.forEach((o,i)=>{
+    let cls="opt";
+    if(done){ if(i===q.a) cls+=" right"; else if(i===ans) cls+=" wrong"; else cls+=" dim"; }
+    h += `<button class="${cls}" data-q="${q.id}" data-i="${i}" ${done?"disabled":""}><span class="let">${LETTERS[i]}</span><span>${o}</span></button>`;
+  });
+  h += `</div>`;
+  if(done){
+    const good = ans===q.a;
+    h += `<div class="fb show ${good?"good":"bad"}"><span class="v">${good?"🔑 Unlocked! That’s right.":"Not quite. The answer is "+LETTERS[q.a]+"."}</span>💡 <b>Locksmith Tip:</b> ${q.why}</div>`;
+  } else h += `<div class="lock">One try. Read every choice before you tap.</div>`;
+  return h + `</div>`;
+}
+function allQs(){ return STEPS.flatMap(s=>s.qs||[]); }
+
+function render(){
+  stopSpeech();
+  const s = STEPS[state.step];
+  let h="";
+  if(s.type==="sort") h = sortHTML();
+  else if(s.type==="results") h = resultsHTML();
+  else {
+    h = s.html;
+    if(s.qs){
+      h += `<div class="card"><span class="tag" style="background:${s.challenge?"var(--ps)":"var(--seq)"}">${s.challenge?"🔒 Challenge Questions":"✅ Quick Check"}</span>`;
+      let start = 1;
+      if(s.challenge){ STEPS.slice(0,state.step).forEach(x=>{ if(x.challenge) start += x.qs.length; }); }
+      s.qs.forEach((q,i)=> h += qHTML(q, start+i));
+      h += `</div>`;
+    }
+  }
+  stage.innerHTML = h;
+  wire();
+  updateChrome();
+  window.scrollTo({top:0,behavior:"smooth"});
+  if(s.type==="results" && !state.celebrated){ state.celebrated=true; save(); setTimeout(()=>confetti(260),300); }
+  else if(s.type==="results"){ setTimeout(()=>confetti(140),300); }
+}
+
+function stepDone(i){
+  const s=STEPS[i];
+  if(s.type==="sort") return SORT_WORDS.every((_,k)=>state.sort[k]!==undefined);
+  if(s.qs) return s.qs.every(q=>state.answers[q.id]!==undefined);
+  return true;
+}
+function updateChrome(){
+  const n=STEPS.length;
+  document.getElementById("stepLabel").textContent = `Step ${state.step+1} of ${n}: ${STEPS[state.step].title}`;
+  document.getElementById("barFill").style.width = Math.round((state.step)/(n-1)*100)+"%";
+  let keys=0, kh="";
+  for(let i=0;i<n-1;i++){ const on = stepDone(i) && (i<=state.maxStep || (i===state.step && (STEPS[i].qs||STEPS[i].type))); if(on) keys++; kh+=`<span class="${on?"on":""}">🔑</span>`; }
+  document.getElementById("keys").innerHTML = kh;
+  document.getElementById("keyLabel").textContent = `Keys: ${keys} / ${n-1}`;
+  const prev=document.getElementById("prevBtn"), next=document.getElementById("nextBtn"), hint=document.getElementById("navhint");
+  prev.style.visibility = state.step===0?"hidden":"visible";
+  const last = state.step===n-1;
+  next.style.display = last?"none":"";
+  const ok = stepDone(state.step);
+  next.disabled = !ok;
+  next.textContent = state.step===n-2 ? "Open the Vault 🔓" : (state.step===0?"Let’s go →":"Next →");
+  hint.textContent = ok||last ? "" : "Answer every question to earn your key and move on.";
+}
+
+function wire(){
+  stage.querySelectorAll(".opt").forEach(b=>b.addEventListener("click",()=>{
+    const id=b.dataset.q, i=+b.dataset.i;
+    if(state.answers[id]!==undefined) return;
+    state.answers[id]=i; save();
+    const q = allQs().find(x=>x.id===id);
+    const wrap = document.getElementById("q-"+id);
+    const num = wrap.querySelector(".num").textContent;
+    wrap.outerHTML = qHTML(q, num);
+    wire(); updateChrome();
+    if(i===q.a) confetti(40);
+    if(stepDone(state.step)) state.maxStep=Math.max(state.maxStep,state.step), save();
+  }));
+  stage.querySelectorAll(".revealBtn").forEach(b=>b.addEventListener("click",()=>{
+    const ex=document.getElementById(b.dataset.reveal); ex.classList.toggle("reveal");
+    b.textContent = ex.classList.contains("reveal") ? "🙈 Hide the signal words" : "✨ Show the signal words";
+  }));
+  stage.querySelectorAll(".speak").forEach(b=>{
+    b.dataset.label=b.textContent;
+    b.addEventListener("click",()=>{
+      let t="";
+      if(b.dataset.readq){ const q=allQs().find(x=>x.id===b.dataset.readq); t=(q.passage?q.passage+" ":"")+q.q+" "+q.opts.map((o,i)=>LETTERS[i]+". "+o+".").join(" "); }
+      else if(b.dataset.read==="self") t=textOf(b.closest(".card"));
+      else t=textOf(document.querySelector(b.dataset.read));
+      speak(t,b);
+    });
+  });
+  stage.querySelectorAll(".sbtn").forEach(b=>b.addEventListener("click",()=>{
+    const k=SORT_WORDS.findIndex((_,j)=>state.sort[j]===undefined);
+    if(k<0) return;
+    state.sort[k]=b.dataset.s; save();
+    if(b.dataset.s===SORT_WORDS[k].a) confetti(30);
+    if(stepDone(state.step)){ state.maxStep=Math.max(state.maxStep,state.step); save(); confetti(120); }
+    render();
+  }));
+}
+
+function sortHTML(){
+  const k=SORT_WORDS.findIndex((_,j)=>state.sort[j]===undefined);
+  const lastK = k<0 ? SORT_WORDS.length-1 : k-1;
+  let h=`<div class="card teach">
+  <button class="speak" data-read="self">🔊 Read to me</button>
+  <span class="tag" style="background:var(--ce)">🎮 Game</span>
+  <h2>Signal Word Sort</h2>
+  <p>A signal word will appear in the gold box. Tap the structure it signals. One try per word!</p>`;
+  if(lastK>=0){
+    const pw=SORT_WORDS[lastK], pick=state.sort[lastK], good=pick===pw.a;
+    h+=`<div class="fb show ${good?"good":"bad"}"><span class="v">${good?"🔑 Yes!":"Not quite."} “${pw.w}” signals ${STRUCTS[pw.a].name}.</span>💡 ${SORT_WHY[pw.a]}</div>`;
+  }
+  if(k>=0){
+    h+=`<div class="lock" style="text-align:center">Word ${k+1} of ${SORT_WORDS.length}</div>
+    <div class="sortword">“${SORT_WORDS[k].w}”</div>
+    <div class="sortbtns">${Object.entries(STRUCTS).map(([id,s])=>`<button class="sbtn ${s.cls}" data-s="${id}">${s.ico} ${s.short||s.name}</button>`).join("")}</div>`;
+  } else {
+    const right=SORT_WORDS.filter((w,j)=>state.sort[j]===w.a).length;
+    h+=`<div class="badge">🎉</div><h3 style="text-align:center">You sorted ${right} of ${SORT_WORDS.length} correctly!</h3><p style="text-align:center">Tap <b>Next</b> to learn how structure helps an author’s purpose.</p>`;
+  }
+  h+=`<div class="sorted">${SORT_WORDS.map((w,j)=>state.sort[j]===undefined?"":`<span style="background:${state.sort[j]===w.a?"var(--ok)":"var(--no)"}">${state.sort[j]===w.a?"✓":"✗"} ${w.w}</span>`).join("")}</div></div>`;
+  return h;
+}
+
+function resultsHTML(){
+  const ch = STEPS.filter(s=>s.challenge).flatMap(s=>s.qs);
+  const qc = STEPS.filter(s=>s.qs && !s.challenge).flatMap(s=>s.qs);
+  const chR = ch.filter(q=>state.answers[q.id]===q.a).length;
+  const qcR = qc.filter(q=>state.answers[q.id]===q.a).length;
+  const soR = SORT_WORDS.filter((w,j)=>state.sort[j]===w.a).length;
+  const pct = Math.round(chR/ch.length*100);
+  let msg, badge;
+  if(pct>=80){ msg="Master Locksmith! You can name text structures and explain how they help an author’s purpose."; badge="🏆"; }
+  else if(pct>=60){ msg="Skilled Locksmith! You are close. Review the tips below for the questions you missed."; badge="🥈"; }
+  else { msg="Apprentice Locksmith! Every locksmith practices. Read the tips below, then ask your teacher about a review."; badge="🔑"; }
+  const missed = ch.filter(q=>state.answers[q.id]!==q.a);
+  let h=`<div class="card teach" style="text-align:center">
+    <button class="speak" data-read="self">🔊 Read to me</button>
+    <div class="badge">${badge}</div>
+    <h1>The Vault Is Unlocked!</h1>
+    <p class="big">${msg}</p>
+    <div class="score">
+      <div><b>${chR} / ${ch.length}</b>Vault Challenge (${pct}%)</div>
+      <div><b>${qcR} / ${qc.length}</b>Quick Checks</div>
+      <div><b>${soR} / ${SORT_WORDS.length}</b>Signal Word Sort</div>
+    </div>
+    <p><b>Show this screen to your teacher.</b></p>
+  </div>`;
+  h+=`<div class="card"><h3>🗝️ Remember the 5 blueprints</h3><div class="chips" style="justify-content:center">${Object.values(STRUCTS).map(s=>`<span class="chip ${s.cls}">${s.ico} ${s.name}</span>`).join("")}</div>
+  <p>When you see a “How does the structure contribute to the author’s purpose?” question: <b>name the structure</b>, then ask <b>what it helps the reader understand</b>.</p></div>`;
+  if(missed.length){
+    h+=`<div class="card"><h3>📝 Review what you missed</h3>`;
+    missed.forEach(q=>{ h+=`<div class="tip"><b>${q.q}</b><br>Correct answer: <b>${q.opts[q.a]}</b><br>💡 ${q.why}</div>`; });
+    h+=`</div>`;
+  }
+  return h;
+}
+
+/* ============ NAV ============ */
+document.getElementById("nextBtn").addEventListener("click",()=>{
+  if(!stepDone(state.step)) return;
+  state.maxStep=Math.max(state.maxStep,state.step);
+  if(state.step<STEPS.length-1){ state.step++; save(); render(); }
+});
+document.getElementById("prevBtn").addEventListener("click",()=>{ if(state.step>0){ state.step--; save(); render(); } });
+document.getElementById("resetBtn").addEventListener("click",()=>{
+  if(confirm("Teacher only: erase all saved answers on this iPad and start over?")){
+    try{ localStorage.removeItem(KEY); }catch(e){}
+    state={step:0,answers:{},sort:{},maxStep:0,celebrated:false}; render();
+  }
+});
+
+/* ============ CONFETTI ============ */
+const cv=document.getElementById("confetti"), cx=cv.getContext("2d"); let parts=[], anim=null;
+function sizeCv(){ cv.width=innerWidth; cv.height=innerHeight; } addEventListener("resize",sizeCv); sizeCv();
+function confetti(n){
+  const cols=["#f2b632","#8e44ad","#1f8fd6","#16a37f","#e8590c","#d6336c","#1b2a5c"];
+  for(let i=0;i<n;i++) parts.push({x:Math.random()*cv.width,y:-20-Math.random()*cv.height*.3,vx:(Math.random()-.5)*4,vy:2+Math.random()*4,r:5+Math.random()*6,c:cols[i%cols.length],a:Math.random()*6,va:(Math.random()-.5)*.3,life:0});
+  if(!anim) tick();
+}
+function tick(){
+  cx.clearRect(0,0,cv.width,cv.height);
+  parts.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=.05; p.a+=p.va; p.life++;
+    cx.save(); cx.translate(p.x,p.y); cx.rotate(p.a); cx.fillStyle=p.c; cx.fillRect(-p.r/2,-p.r/4,p.r,p.r/2); cx.restore(); });
+  parts=parts.filter(p=>p.y<cv.height+30 && p.life<600);
+  anim = parts.length ? requestAnimationFrame(tick) : (cx.clearRect(0,0,cv.width,cv.height), null);
+}
+
+if(state.step>=STEPS.length) state.step=0;
+render();
+</script>
+</body>
+</html>
